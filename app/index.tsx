@@ -7,18 +7,6 @@ import { GradientText } from '@/styles/GradientText'
 const Index = () => {
   const router = useRouter()
 
-  const [fontsLoaded] = useFonts({
-    LobsterTwo: require('../assets/fonts/LobsterTwo-Bold.ttf'),
-  })
-
-  if (!fontsLoaded) {
-    return (
-      <View className="flex-1 justify-center items-center bg-black">
-        <ActivityIndicator size="large" color="#07A619" />
-      </View>
-    )
-  }
-
   return (
     <ImageBackground
       source={require('../assets/landing/landing1.jpeg')}
@@ -41,35 +29,6 @@ const Index = () => {
             elevation: 6,
           }}
         >
-          {/* <Text
-            style={{
-              color: '#011201',
-              padding: 0,
-              fontSize: 55, 
-              fontWeight: '700',
-              textAlign: 'center',
-              textShadowColor: '#fcd303',
-              textShadowOffset: { width: 0.2, height: 0.1 },
-              textShadowRadius: 9,
-            }}
-          >
-          𝐆𝐫𝐞𝐞𝐧 
-          </Text>
-
-          <Text
-            style={{
-              color: '#011201',
-              padding: 0,
-              fontSize: 55, 
-              fontWeight: '700',
-              textAlign: 'center',
-              textShadowColor: '#fcd303',
-              textShadowOffset: { width: 0.2, height: 0.1 },
-              textShadowRadius: 9,
-            }}
-          >
-          𝐆𝐚𝐫𝐝𝐞𝐧
-          </Text> */}
 
           <GradientText text="𝐆𝐫𝐞𝐞𝐧" />
           <GradientText text="𝐆𝐚𝐫𝐝𝐞𝐧" />
