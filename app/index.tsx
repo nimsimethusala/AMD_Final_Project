@@ -45,30 +45,17 @@ const Index = () => {
           <TouchableOpacity
             onPress={() => router.push("/login")}
             style={{
-              backgroundColor: "#011a01",
+              backgroundColor: '#011a01',
               paddingHorizontal: 20,
               paddingVertical: 8,
               borderRadius: 15,
+              alignSelf: 'center',
               marginTop: 30,
+              boxShadow: '0.5px 1px 10px 3px rgba(5, 250, 9, 0.5)',
             }}
           >
             <Text style={{ color: "white", fontWeight: "600", fontSize: 16 }}>
-              Login
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={() => router.push("/signup")}
-            style={{
-              backgroundColor: "#011a01",
-              paddingHorizontal: 20,
-              paddingVertical: 8,
-              borderRadius: 15,
-              marginTop: 15,
-            }}
-          >
-            <Text style={{ color: "white", fontWeight: "600", fontSize: 16 }}>
-              Signup
+              Get Started
             </Text>
           </TouchableOpacity>
         </View>
