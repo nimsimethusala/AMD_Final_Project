@@ -3,8 +3,7 @@ import { Tabs } from 'expo-router'
 import { MaterialIcons } from "@expo/vector-icons"
 
 const tabs = [
-    {label: 'Home', name: 'home', icon: "home-filled"},
-    {label: 'Uploads', name: 'uploads', icon: "cloud-upload" },
+    {label: 'Home', name: 'home', icon: "home-filled"}
 ]as const
 
 const DashboardRoutes = () => {
