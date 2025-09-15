@@ -12,9 +12,9 @@ import { useRouter } from "expo-router";
 import { useForm, Controller } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { login } from "@/services/authService"; // your firebase service
+import { login } from "@/services/authService"; // your firebase login service
 
-// ===== Validation Schema =====
+// Validation schema
 const schema = yup.object().shape({
   email: yup.string().email("Invalid email").required("Email is required"),
   password: yup.string().required("Password is required"),
@@ -27,9 +27,7 @@ const Login = () => {
     control,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm({
-    resolver: yupResolver(schema),
-  });
+  } = useForm({ resolver: yupResolver(schema) });
 
   const onSubmit = async (data: any) => {
     try {
@@ -100,13 +98,12 @@ const Login = () => {
             </Text>
           </TouchableOpacity>
 
+          {/* Signup link */}
           <Pressable
             onPress={() => router.push("/signup")}
             style={{ marginTop: 25 }}
           >
-            <Text style={styles.link}>
-              Don’t have an account? Register
-            </Text>
+            <Text style={styles.link}>Don’t have an account? Register</Text>
           </Pressable>
         </View>
       </View>
