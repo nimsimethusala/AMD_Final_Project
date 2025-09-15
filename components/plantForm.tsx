@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Image,
   TextInput as RNTextInput,
+  Platform,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
@@ -101,9 +102,12 @@ const PlantForm: React.FC<PlantFormProps> = ({ visible, onClose, editingPlant })
     }
   }, [visible, editingPlant]);
 
+  // Image picker with crop
   const pickImageFromLibrary = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
       quality: 1,
     });
     if (!result.canceled) setImage(result.assets[0].uri);
@@ -112,6 +116,8 @@ const PlantForm: React.FC<PlantFormProps> = ({ visible, onClose, editingPlant })
   const takePhotoWithCamera = async () => {
     const result = await ImagePicker.launchCameraAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
       quality: 1,
     });
     if (!result.canceled) setImage(result.assets[0].uri);
@@ -172,7 +178,6 @@ const PlantForm: React.FC<PlantFormProps> = ({ visible, onClose, editingPlant })
                 <LinearGradient
                   colors={["#e6fcc7", "#05966950"]}
                   style={{
-                    backgroundColor: "#10b98120",
                     width: 180,
                     height: 180,
                     borderRadius: 90,
@@ -180,7 +185,7 @@ const PlantForm: React.FC<PlantFormProps> = ({ visible, onClose, editingPlant })
                     alignItems: "center",
                   }}
                 >
-                  <MaterialIcons name="local-florist" size={100} color="#10b981" opacity={0.2} />
+                  <MaterialIcons name="local-florist" size={100} color="#027d66" opacity={0.2} />
                 </LinearGradient>
               )}
 
@@ -194,7 +199,7 @@ const PlantForm: React.FC<PlantFormProps> = ({ visible, onClose, editingPlant })
                   width: 45,
                   height: 45,
                   borderRadius: 22.5,
-                  backgroundColor: "#059669",
+                  backgroundColor: "#10b981",
                   alignItems: "center",
                   justifyContent: "center",
                   borderWidth: 2,
@@ -209,7 +214,6 @@ const PlantForm: React.FC<PlantFormProps> = ({ visible, onClose, editingPlant })
               </TouchableOpacity>
             </View>
           </View>
-
 
           {/* Plant Name */}
           <LinearGradient colors={["#e6fcc7", "#05966950"]} style={{ padding: 12, borderRadius: 50, marginBottom: 10 }}>
