@@ -19,7 +19,7 @@ import { Plant, PlantCategory } from "@/types/Plant";
 interface PlantFormProps {
   visible: boolean;
   onClose: () => void;
-  editingPlant?: Plant | null; // optional for edit
+  editingPlant?: Plant | null;
 }
 
 interface RadioButtonOption {
@@ -161,21 +161,58 @@ const PlantForm: React.FC<PlantFormProps> = ({ visible, onClose, editingPlant })
           </TouchableOpacity>
 
           {/* Image Picker */}
-          <TouchableOpacity onPress={pickImage} style={{ alignSelf: "center", marginVertical: 15 }}>
-            <LinearGradient
-              colors={["#ffffff", "#e6fcc7"]}
-              style={{ width: 180, height: 180, borderRadius: 100, justifyContent: "center", alignItems: "center", overflow: "hidden" }}
-            >
+          <View style={{ alignItems: "center", marginVertical: 15 }}>
+            <View style={{ position: "relative" }}>
               {image ? (
-                <Image source={{ uri: image }} style={{ width: 180, height: 180, borderRadius: 90 }} />
+                <Image
+                  source={{ uri: image }}
+                  style={{ width: 180, height: 180, borderRadius: 90 }}
+                />
               ) : (
-                <MaterialIcons name="local-florist" size={100} color="green" opacity={0.15} />
+                <LinearGradient
+                  colors={["#e6fcc7", "#05966950"]}
+                  style={{
+                    backgroundColor: "#10b98120",
+                    width: 180,
+                    height: 180,
+                    borderRadius: 90,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <MaterialIcons name="local-florist" size={100} color="#10b981" opacity={0.2} />
+                </LinearGradient>
               )}
-            </LinearGradient>
-          </TouchableOpacity>
+
+              {/* Camera/Edit Button */}
+              <TouchableOpacity
+                onPress={pickImage}
+                style={{
+                  position: "absolute",
+                  bottom: 0,
+                  right: 0,
+                  width: 45,
+                  height: 45,
+                  borderRadius: 22.5,
+                  backgroundColor: "#059669",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderWidth: 2,
+                  borderColor: "#fff",
+                }}
+              >
+                <MaterialIcons
+                  name={image ? "edit" : "photo-camera"}
+                  size={22}
+                  color="#fff"
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+
 
           {/* Plant Name */}
-          <LinearGradient colors={["#ffffff", "#e6fcc7"]} style={{ padding: 12, borderRadius: 50, marginBottom: 10 }}>
+          <LinearGradient colors={["#e6fcc7", "#05966950"]} style={{ padding: 12, borderRadius: 50, marginBottom: 10 }}>
             <RNTextInput
               placeholder="Plant Name"
               value={plantName}
@@ -185,7 +222,7 @@ const PlantForm: React.FC<PlantFormProps> = ({ visible, onClose, editingPlant })
           </LinearGradient>
 
           {/* Description */}
-          <LinearGradient colors={["#ffffff", "#e6fcc7"]} style={{ padding: 12, borderRadius: 50, marginBottom: 10 }}>
+          <LinearGradient colors={["#e6fcc7", "#05966950"]} style={{ padding: 12, borderRadius: 50, marginBottom: 10 }}>
             <RNTextInput
               placeholder="Description"
               value={description}
