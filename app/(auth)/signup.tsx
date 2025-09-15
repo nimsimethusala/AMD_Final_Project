@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -6,14 +6,17 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  Image,
+  Alert,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useForm, Controller } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { signUp } from "@/services/authService";
+import * as ImagePicker from "expo-image-picker";
+import { signUp, uploadProfileImage } from "@/services/authService";
 
-// ===== Validation Schema =====
+// Validation schema
 const schema = yup.object().shape({
   username: yup.string().required("Name is required"),
   email: yup.string().email("Invalid email").required("Email is required"),
@@ -25,16 +28,53 @@ const schema = yup.object().shape({
 
 const Signup = () => {
   const router = useRouter();
+  const [image, setImage] = useState<string | null>(null);
 
-  const { control, handleSubmit, formState: { errors, isSubmitting }} = useForm({ resolver: yupResolver(schema)});
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm({ resolver: yupResolver(schema) });
 
+  // ===== Pick Image (Camera or Gallery) =====
+  const pickImage = async (fromCamera: boolean) => {
+    const result = await (fromCamera
+      ? ImagePicker.launchCameraAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.Images,
+          allowsEditing: true,
+          aspect: [1, 1],
+          quality: 0.7,
+        })
+      : ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.Images,
+          allowsEditing: true,
+          aspect: [1, 1],
+          quality: 0.7,
+        }));
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  };
+
+  // ===== Submit Signup =====
   const onSubmit = async (data: any) => {
     try {
       const uid = await signUp(data.username, data.email, data.password);
       console.log("User created:", uid);
+
+      // Upload image if selected
+      if (image) {
+        const response = await fetch(image);
+        const blob = await response.blob();
+        await uploadProfileImage(uid, blob);
+      }
+
+      Alert.alert("Success", "Account created successfully!");
       router.push("/login");
     } catch (error: any) {
       console.error("Signup error:", error.message);
+      Alert.alert("Error", error.message);
     }
   };
 
@@ -47,6 +87,52 @@ const Signup = () => {
       <View style={styles.container}>
         <View style={styles.card}>
           <Text style={styles.title}>Create an Account</Text>
+
+          {/* Profile Image */}
+          {/* <TouchableOpacity
+            onPress={() =>
+              Alert.alert("Choose Option", "", [
+                { text: "Camera", onPress: () => pickImage(true) },
+                { text: "Gallery", onPress: () => pickImage(false) },
+                { text: "Cancel", style: "cancel" },
+              ])
+            }
+            style={styles.imageContainer}
+          >
+            {image ? (
+              <Image source={{ uri: image }} style={styles.profileImage} />
+            ) : (
+              <Text style={{ color: "#fff" }}>+ Add Profile Picture</Text>
+            )}
+          </TouchableOpacity> */}
+
+          {/* Profile Image */}
+<TouchableOpacity
+  onPress={() =>
+    Alert.alert("Choose Option", "", [
+      { text: "Camera", onPress: () => pickImage(true) },
+      { text: "Gallery", onPress: () => pickImage(false) },
+      { text: "Cancel", style: "cancel" },
+    ])
+  }
+  style={styles.imageContainer}
+>
+  {image ? (
+    <Image source={{ uri: image }} style={styles.profileImage} />
+  ) : (
+    <Text style={{ color: "#fff" }}>+ Add Profile Picture</Text>
+  )}
+</TouchableOpacity>
+
+{/* Remove Image Button */}
+{image && (
+  <TouchableOpacity
+    onPress={() => setImage(null)}
+    style={styles.removeButton}
+  >
+    <Text style={{ color: "red", fontWeight: "600" }}>Remove</Text>
+  </TouchableOpacity>
+)}
 
           {/* Username */}
           <Controller
@@ -105,6 +191,7 @@ const Signup = () => {
             <Text style={styles.error}>{errors.password.message}</Text>
           )}
 
+          {/* Submit Button */}
           <TouchableOpacity
             disabled={isSubmitting}
             onPress={handleSubmit(onSubmit)}
@@ -126,7 +213,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: "center", alignItems: "center" },
   card: {
     backgroundColor: "rgba(3, 227, 252,0.25)",
-    height: "75%",
+    height: "80%",
     width: "90%",
     borderRadius: 40,
     padding: 20,
@@ -142,6 +229,17 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 1,
   },
+  imageContainer: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: "rgba(255,255,255,0.2)",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 15,
+    overflow: "hidden",
+  },
+  profileImage: { width: "100%", height: "100%" },
   input: {
     backgroundColor: "rgba(3, 179, 255, 0.5)",
     borderRadius: 10,
@@ -155,10 +253,18 @@ const styles = StyleSheet.create({
   error: { color: "red", fontSize: 12, marginTop: 5 },
   button: {
     backgroundColor: "#001414",
-    paddingHorizontal: 25,
-    paddingVertical: 12,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
     borderRadius: 15,
-    marginTop: 40,
+    marginTop: 30,
   },
   buttonText: { color: "#fff", fontWeight: "600", fontSize: 16 },
+  removeButton: {
+  marginTop: 8,
+  backgroundColor: "rgba(255,255,255,0.2)",
+  paddingHorizontal: 12,
+  paddingVertical: 6,
+  borderRadius: 10,
+},
+
 });
